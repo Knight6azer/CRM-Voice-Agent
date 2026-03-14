@@ -1,0 +1,8 @@
+﻿python-dotenv
+openai
+langchain
+elevenlabs
+fastapi
+uvicorn
+twilio
+streamlit
