@@ -35,7 +35,24 @@ def text_to_speech(text: str, output_path: str = "response.mp3"):
         print(f"Error in TTS: {response.text}")
         return None
 
+from config.api_keys import OPENAI_API_KEY
+from openai import OpenAI
+
+client = OpenAI(api_key=OPENAI_API_KEY)
+
 def speech_to_text(audio_path: str):
-    """Placeholder for Whisper STT integration."""
-    # In a real scenario, we'd use openai.Audio.transcribe
-    return "Demo user input from voice."
+    """Converts speech to text using OpenAI Whisper."""
+    if not os.path.exists(audio_path):
+        print(f"Audio file not found: {audio_path}")
+        return None
+        
+    try:
+        with open(audio_path, "rb") as audio_file:
+            transcript = client.audio.transcriptions.create(
+                model="whisper-1", 
+                file=audio_file
+            )
+        return transcript.text
+    except Exception as e:
+        print(f"Error in STT: {e}")
+        return "Sorry, I couldn't hear that clearly. Could you please repeat?"
