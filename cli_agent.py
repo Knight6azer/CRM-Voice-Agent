@@ -3,11 +3,32 @@ import requests
 from dotenv import load_dotenv
 from openai import OpenAI
 
-# Configuration & API Keys
+# --- Configuration & API Keys ---
 load_dotenv()
 
+# Required for core functionality
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
+
+# Additional integration keys
+TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
+TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
+TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER")
+APOLLO_API_KEY = os.getenv("APOLLO_API_KEY")
+VAPI_API_KEY = os.getenv("VAPI_API_KEY")
+
+def check_keys():
+    """Diagnostic to check which API keys are loaded."""
+    keys = {
+        "OpenAI": OPENAI_API_KEY,
+        "ElevenLabs": ELEVENLABS_API_KEY,
+        "Twilio": TWILIO_ACCOUNT_SID,
+        "Apollo": APOLLO_API_KEY,
+        "Vapi": VAPI_API_KEY
+    }
+    loaded = [name for name, val in keys.items() if val and "your_" not in val.lower()]
+    missing = [name for name, val in keys.items() if not val or "your_" in val.lower()]
+    return loaded, missing
 
 # Initializing OpenAI Client
 client = OpenAI(api_key=OPENAI_API_KEY)
@@ -135,12 +156,18 @@ def play_audio(file_path):
 # CLI Interface 
 
 def main():
+    loaded, missing = check_keys()
+    
     os.system('cls' if os.name == 'nt' else 'clear')
     print("="*60)
-    print("      🌟 RIVERWOOD ESTATE AI VOICE ASSISTANT 🌟      ")
+    print("      *** RIVERWOOD ESTATE AI VOICE ASSISTANT ***      ")
     print("="*60)
-    print(" Status: CLI Mode Active")
-    print(" Source: Consolidated Core")
+    print(f" Status: CLI Mode Active | Keys Loaded: {len(loaded)}/{len(loaded) + len(missing)}")
+    print(f" System: GPT-4o-mini | ElevenLabs (Rachel)")
+    
+    if missing:
+        print(f" Warning: Missing keys ({', '.join(missing)})")
+    
     print("="*60)
     print("\n[Commands]")
     print(" - Type your message to chat.")
@@ -169,35 +196,36 @@ def main():
         if user_input.lower().startswith("voice:"):
             audio_path = user_input[6:].strip()
             if not os.path.exists(audio_path):
-                print(f"❌ Error: Audio file not found at '{audio_path}'")
+                print(f"[!] Error: Audio file not found at '{audio_path}'")
                 continue
                 
-            print(f"⏳ Processing audio from: {audio_path}...")
+            print(f"[*] Processing audio from: {audio_path}...")
             transcribed_text = speech_to_text(audio_path)
             
             if transcribed_text:
-                print(f"📝 Transcribed: \"{transcribed_text}\"")
+                print(f"[#] Transcribed: \"{transcribed_text}\"")
                 user_input = transcribed_text
             else:
-                print("❌ Failed to transcribe audio. Please check your OpenAI API quota.")
+                print("[!] Failed to transcribe audio. Please check your OpenAI API quota.")
                 continue
 
         # Generate Response
-        print("⏳ Thinking...")
+        print("[*] Thinking...")
         response_text = generate_llm_response(user_input)
         
         if "insufficient_quota" in response_text or "Error in LLM" in response_text:
-             print("\n⚠️  OpenAI API Error: Please check your quota or billing at https://platform.openai.com/usage")
+             print("\n[!] OpenAI API Error: Please check your quota or billing at https://platform.openai.com/usage")
         
         print(f"\nAgent: {response_text}")
 
         # Convert to Speech and Play
-        print("🔊 Generating voice...")
+        print("[*] Generating voice...")
         audio_file = text_to_speech(response_text)
         if audio_file:
             play_audio(audio_file)
         else:
-            print("⚠️  Voice generation failed. Please check your ElevenLabs API key and Voice ID.")
+            print("[!] Voice generation failed. Please check your ElevenLabs API key and Voice ID.")
+
 
 if __name__ == "__main__":
     main()
