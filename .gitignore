@@ -142,3 +142,6 @@ Thumbs.db
 
 # Logs
 *.log
+logs/
+generated_audio/
+tests_runtime/
