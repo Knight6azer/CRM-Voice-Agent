@@ -1,34 +1,24 @@
-# 🏡 Riverwood AI CRM Voice Agent
+# 🏡 Riverwood AI CRM CLI Voice Agent
 
-![Status](https://img.shields.io/badge/Status-Enhanced-brightgreen)
-![Tech](https://img.shields.io/badge/Tech-FastAPI%20%7C%20Streamlit%20%7C%20OpenAI-blue)
+![Status](https://img.shields.io/badge/Status-Simplified-brightgreen)
+![Tech](https://img.shields.io/badge/Tech-OpenAI%20%7C%20ElevenLabs-blue)
 ![License](https://img.shields.io/badge/License-MIT-orange)
 
-An industry-standard, scalable AI-powered voice assistant designed for the prestigious **Riverwood Estate**. This agent provides personalized construction updates, handles bilingual (Hindi/English) conversations with a premium persona, and is architected to scale to thousands of concurrent calls.
+A streamlined, single-file AI voice assistant for **Riverwood Estate**. This agent handles property updates and bilingual conversations via a simple CLI interface.
 
 ## ✨ Key Features
+- **Consolidated Core**: All logic (LLM, STT, TTS) is in a single, well-organized file.
 - **Premium AI Persona**: Sophisticated relationship manager personality using GPT-4o-mini.
-- **Bilingual Conversations**: Seamlessly switches between Hindi and English greetings and updates.
-- **High-Fidelity Voice**: Natural-sounding TTS via ElevenLabs.
-- **Advanced STT**: High-accuracy speech-to-text integration via OpenAI Whisper.
-- **Interactive Dashboard**: Modern, vibrant Streamlit UI with real-time analytics and live demo.
-- **Scalable Architecture**: Designed for deployment with Kubernetes, Redis, and Twilio.
-
-## 🛠 Tech Stack
-- **AI Core**: OpenAI GPT-4o-mini & Whisper (STT)
-- **Memory**: LangChain `ConversationBufferMemory`
-- **Voice Synthesis**: ElevenLabs (Rachel Voice)
-- **Backend**: FastAPI (Python 3.9+)
-- **Frontend**: Streamlit (Vibrant UI with Custom CSS & Plotly)
-- **Telephony**: Twilio Voice API
+- **Bilingual Support**: Hindi/English greetings and updates.
+- **Voice Integration**: ElevenLabs for high-fidelity speech and OpenAI Whisper for transcription.
+- **CLI Interface**: Interactive terminal-based chat with command support.
 
 ## 📂 Project Structure
 ```text
-├── backend/          # Core AI logic, STT/TTS integration, and FastAPI server
-├── frontend/         # Vibrant Streamlit dashboard for monitoring and simulation
-├── config/           # Centralized API key and configuration management
-├── tests/            # Automated test suite (in progress)
-└── requirements.txt  # Production dependencies
+├── cli_agent.py      # The main application (Logic + Interface)
+├── requirements.txt  # Project dependencies
+├── .env              # Your API Keys (Not tracked by Git)
+└── .env.example      # Template for environment variables
 ```
 
 ## 🚀 Quick Start
@@ -43,26 +33,19 @@ An industry-standard, scalable AI-powered voice assistant designed for the prest
 2.  **Environment Setup**:
     Create a `.env` file from the example:
     ```bash
-    cp .env.example .env
-    # Add your OpenAI, ElevenLabs, and Twilio keys
+    cat .env.example > .env
+    # Add your OPENAI_API_KEY and ELEVENLABS_API_KEY
     ```
 
-3.  **Run Backend (API)**:
+3.  **Run the Agent**:
     ```bash
-    python -m backend.main
+    python cli_agent.py
     ```
 
-4.  **Run Dashboard (UI)**:
-    ```bash
-    streamlit run frontend/streamlit_app.py
-    ```
-
-## 📈 Scalability Roadmap
-To handle high-volume morning campaigns (1000+ calls):
-1.  **Load Balancing**: Use Nginx or AWS ALB to distribute traffic.
-2.  **Async Task Queue**: Implement Redis with Celery to dispatch calls and handle retries.
-3.  **Horizontal Scaling**: Deploy FastAPI workers as pods in a Kubernetes cluster.
-4.  **Concurrency**: Twilio's API handles the telephony layer's high concurrency limits.
+## 🛠 Usage
+- **Chat**: Simply type your message in the terminal.
+- **Voice Input**: Use `voice: <path_to_audio_file>` to process a recording.
+- **Exit**: Type `exit` or `quit`.
 
 ---
 *Built with ❤️ for Riverwood Estate.*
